@@ -7,6 +7,7 @@
  * compile function
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "common.h"
@@ -27,7 +28,7 @@
  */
 int compile(FILE *in, FILE *out, int stack_size, int array_size)
 {
-	int c, ret = 0;
+	int c, ret, n = 0;
 	unsigned long label_num = 0L;
 	int stack_ptr = 0;
 	unsigned long *stack = malloc(stack_size * sizeof *stack);
@@ -48,6 +49,9 @@ int compile(FILE *in, FILE *out, int stack_size, int array_size)
 	fputs("\n", out);
 	while ((c = fgetc(in)) != EOF) {
 		switch (c) {
+		case ';': // I like to have other options besides [] for comments
+		    while((c = fgetc(in)) != '\n' && c != EOF){}
+			break;
 		case '>':
 			fputs("\tinc %edi\n", out);
 			fputs("\n", out);
@@ -57,12 +61,20 @@ int compile(FILE *in, FILE *out, int stack_size, int array_size)
 			fputs("\n", out);
 			break;
 		case '+':
-			fputs("\tincb (%edi)\n", out);
-			fputs("\n", out);
+		    n = read_count(in);
+			if (n < 0) { ret = -1; goto cleanup; }
+			for (int i = 0; i < n; i++){
+			    fputs("\tincb (%edi)\n", out);
+				fputs("\n", out);
+			}
 			break;
 		case '-':
-			fputs("\tdecb (%edi)\n", out);
-			fputs("\n", out);
+            n = read_count(in);
+            if (n < 0) { ret = -1; goto cleanup;}
+            for (int i = 0; i < n; i++){
+                fputs("\tdecb (%edi)\n", out);
+                fputs("\n", out);
+            }
 			break;
 		case '.':
 			fputs("\tmovl $4, %eax\n", out);
@@ -78,6 +90,13 @@ int compile(FILE *in, FILE *out, int stack_size, int array_size)
 			fputs("\tmovl %edi, %ecx\n", out);
 			fputs("\tmovl $1, %edx\n", out);
 			fputs("\tint $0x80\n", out);
+			++label_num;
+			fputs("\tcmpl $1, %eax\n", out);
+			snprintf(buf, BUF_SIZE, "\tje .PQP%lu\n", label_num);
+			fputs(buf, out);
+			fputs("\tmovb $0, (%edi)\n", out);
+			snprintf(buf, BUF_SIZE, ".PQP%lu:\n", label_num);
+			fputs(buf, out);
 			fputs("\n", out);
 			break;
 		case '[':

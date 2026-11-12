@@ -32,4 +32,5 @@ int get_as_file(int mode, FILE **out, const char *name, const char *input_name);
 int close_as_file(int mode, FILE *f);
 int assemble(int mode, const char *as_file, const char *obj_file);
 int get_in(int mode, const char *input_file, FILE **in);
+int read_count(FILE *in);
 #endif

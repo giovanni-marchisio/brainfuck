@@ -155,7 +155,7 @@ char *remove_extenstion(const char *str)
  */
 char *get_as(int mode, const char *name, const char *original, char **ret)
 {
-	if (name != NULL && ~(mode & ASSEMBLE))
+	if (name != NULL && !(mode & ASSEMBLE))
 		*ret = strdup(name);
 	else if (mode & PIPE_OUT)
 		*ret = NULL;
@@ -186,7 +186,7 @@ char *get_as(int mode, const char *name, const char *original, char **ret)
  */
 char *get_obj(int mode, const char *name, const char *original, char **ret)
 {
-	if (name != NULL && ~(mode & LINK)) {
+	if (name != NULL && !(mode & LINK)) {
 		*ret = strdup(name);
 	} else if (original != NULL) {
 		char *base = remove_extenstion(original);
@@ -219,7 +219,7 @@ char *get_obj(int mode, const char *name, const char *original, char **ret)
  */
 int get_as_file(int mode, FILE **out, const char *name, const char *input_name)
 {
-	if (name != NULL && ~(mode & ASSEMBLE)) {
+	if (name != NULL && !(mode & ASSEMBLE)) {
 		*out = fopen(name, "w");
 		if (*out == NULL) {
 			fprintf(stderr, "error: couldn't open file %s: ", name);
@@ -329,4 +329,42 @@ int get_in(int mode, const char *input_file, FILE **in)
 		return -1;
 	}
 	return 0;
+}
+
+int read_count(FILE *in){
+    int c = fgetc(in);
+    if ( c != '*') {
+        ungetc(c, in);
+        return 1;
+    }
+    
+    int n = 0;
+    int d = 0;
+    int t = 0;
+    
+    while((c = fgetc(in)) != EOF && isdigit(c)){
+        n = n * 10 + (c - '0');
+        
+        if (n > 255) {
+            fprintf(stderr, "error: cell can't be over 255.\n");
+            return -1;
+        }
+
+    }
+
+    // getting the length so we can find if the user inserted something after *
+    t = n;
+    while ( t > 0){
+        t /= 10;
+        d++;
+    }
+    
+    ungetc(c, in);
+
+    if (d == 0) {
+        fprintf(stderr, "error: you must input a number after *.\n");
+        return -1;
+    }
+    
+    return n;
 }

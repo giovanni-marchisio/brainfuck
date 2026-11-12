@@ -1,0 +1,27 @@
+[ 
+I've added a way to multiply + and - to make writing in brainfuck easier,
+sadly this makes the program look more lazy (?), since you can just skip loops
+and write the whole thing byte by byte (not that you wouldn't be able to do it before
+it was just more exausting).
+
+Although this kinda destroys the charm of the language, I think it's cool to have options.    
+]
+
+; +another way to comment
+;
+; 10648 bytes 
++*72. > +*101. > +*108.. > +*111.                                  ; Hello
+> +*32. >                                                          ;
++*87. > +*111. > +*114. > +*108. > +*100.> +*33.                   ; World!
+>+*10.>                                                            ; \n
+
+;
+
+; 9880 bytes
+>+*9[<+*8>-]<.>+*7[<+*4>-]<+.+*7..+*3.                             ; Hello
+[-] >+*10[<+*3>-]<+*2.                                             ;
+>+*10[<+*5>-]<+*5.>+*10[<+*2>-]<+*4.+*3.-*6.-*8.>+*7[<-*10>-]<+*3. ; World !
+>+*2[<-*10>-]<-*3.                                                 ; \n
+
+[-]>+*2[<+*5>-]<.>+*10[<+*10>-]<+*6.+*5.-*9.-*11.>+*5[<-*10>-]<+*7.[-],-*10[+*10.,-*10]
+
