@@ -53,15 +53,23 @@ int compile(FILE *in, FILE *out, int stack_size, int array_size)
 		    while((c = fgetc(in)) != '\n' && c != EOF){}
 			break;
 		case '>':
-			fputs("\tinc %edi\n", out);
-			fputs("\n", out);
+		    n = read_count(in, 0); // 0 because I don't know what to do
+			if (n < 0) { ret = -1; goto cleanup; }
+			for (int i = 0; i < n; i++){
+			    fputs("\tinc %edi\n", out);
+				fputs("\n", out);
+			}
 			break;
 		case '<':
-			fputs("\tdec %edi\n", out);
-			fputs("\n", out);
+            n = read_count(in, 0);
+            if (n < 0) { ret = -1; goto cleanup; }
+            for (int i = 0; i < n; i++){
+                fputs("\tdec %edi\n", out);
+                fputs("\n", out);
+            }
 			break;
 		case '+':
-		    n = read_count(in);
+		    n = read_count(in, INSTRUCTION);
 			if (n < 0) { ret = -1; goto cleanup; }
 			for (int i = 0; i < n; i++){
 			    fputs("\tincb (%edi)\n", out);
@@ -69,7 +77,7 @@ int compile(FILE *in, FILE *out, int stack_size, int array_size)
 			}
 			break;
 		case '-':
-            n = read_count(in);
+            n = read_count(in, INSTRUCTION);
             if (n < 0) { ret = -1; goto cleanup;}
             for (int i = 0; i < n; i++){
                 fputs("\tdecb (%edi)\n", out);

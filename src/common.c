@@ -331,7 +331,7 @@ int get_in(int mode, const char *input_file, FILE **in)
 	return 0;
 }
 
-int read_count(FILE *in){
+int read_count(FILE *in, int mode){
     int c = fgetc(in);
     if ( c != '*') {
         ungetc(c, in);
@@ -340,29 +340,29 @@ int read_count(FILE *in){
     
     int n = 0;
     int d = 0;
-    int t = 0;
     
     while((c = fgetc(in)) != EOF && isdigit(c)){
-        n = n * 10 + (c - '0');
+        // forgot to check 0, this is the best I can do right now
+        if (c == '0' && d == 0) {
+            d = 0;
+            break;
+        }
         
-        if (n > 255) {
+        n = n * 10 + (c - '0');
+        d++;
+        // I've added the INSTRUCTION bit, but I don't know if this is the best thing to do
+        // maybe there's a better and more optimal way to do this.
+        if (n > 255 && (mode & INSTRUCTION)) {
             fprintf(stderr, "error: cell can't be over 255.\n");
             return -1;
         }
 
     }
-
-    // getting the length so we can find if the user inserted something after *
-    t = n;
-    while ( t > 0){
-        t /= 10;
-        d++;
-    }
     
     ungetc(c, in);
 
     if (d == 0) {
-        fprintf(stderr, "error: you must input a number after *.\n");
+        fprintf(stderr, "error: the value after * must be greater than 0 and not null.\n");
         return -1;
     }
     

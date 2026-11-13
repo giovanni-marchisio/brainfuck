@@ -20,6 +20,7 @@
 #define PIPE_OUT (1 << 3)
 #define PIPE_IN (1 << 4)
 #define VERBOSE (1 << 5)
+#define INSTRUCTION (1 << 6)
 
 int is_uint(const char *str);
 void print_help(void);
@@ -32,5 +33,5 @@ int get_as_file(int mode, FILE **out, const char *name, const char *input_name);
 int close_as_file(int mode, FILE *f);
 int assemble(int mode, const char *as_file, const char *obj_file);
 int get_in(int mode, const char *input_file, FILE **in);
-int read_count(FILE *in);
+int read_count(FILE *in, int mode);
 #endif

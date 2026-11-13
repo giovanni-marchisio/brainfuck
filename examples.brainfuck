@@ -4,7 +4,19 @@ sadly this makes the program look more lazy (?), since you can just skip loops
 and write the whole thing byte by byte (not that you wouldn't be able to do it before
 it was just more exausting).
 
-Although this kinda destroys the charm of the language, I think it's cool to have options.    
+Although this kinda destroys the charm of the language, I think it's cool to have options.  
+
+Update: I've made a typo on one of my commits and ended up removing the commit where I changed
+the if statement of 'get_as', 'get_obj' and 'get_as_file'. The author made the bitwise statement 
+always true, and this made the '-o' use the same name of the output in the inputso you couldn't 
+compile with '-o'. (maybe this is something to do with a newer version of something on my machine ???
+ I don't know.).
+
+ I don't think there's a reason for me to say this, but: This is just a fork for me to play around
+ and experiment with the compiler. I'm not smart enough to write my on (although I could try to
+ understand this one better and write one), and I'm probably commiting a sin by adding features like
+ that automatically to things like ++++... if I write ; '+*N' (the ';' is to prevent error compiling).
+
 ]
 
 ; +another way to comment
@@ -23,5 +35,6 @@ Although this kinda destroys the charm of the language, I think it's cool to hav
 >+*10[<+*5>-]<+*5.>+*10[<+*2>-]<+*4.+*3.-*6.-*8.>+*7[<-*10>-]<+*3. ; World !
 >+*2[<-*10>-]<-*3.                                                 ; \n
 
-[-]>+*2[<+*5>-]<.>+*10[<+*10>-]<+*6.+*5.-*9.-*11.>+*5[<-*10>-]<+*7.[-],-*10[+*10.,-*10]
+[-]>+*2[<+*5>-]<.>+*10[<+*10>-]<+*6.+*5.-*9.-*11.>+*5[<-*10>-]<+*7.[-] ; type:
+,-*10[+*10.,-*10]                                                      ; < your input >
 
